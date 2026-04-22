@@ -1,28 +1,26 @@
-// ============================================================
-// DATA RIIL TRANSJAKARTA (MOCK DATA UPDATE)
-// ============================================================
+// DATA MOCK TRANSJAKARTA
 
-// HALAMAN 1: Beranda (Tujuan: Kota dari Monas)
+// PAGE 1: BERANDA
 export const initialRoutes = [
 	{
 		id: "1",
 		koridor: "1",
 		rute: "Blok M - Kota",
-		etaBase: 4, // Tiba di Monas 4 menit lagi
+		etaBase: 40,
 		status: "Sedang",
-		firstHalteDeparture: "11:00", // Logika: Bus berangkat dari Blok M 30 menit lalu
+		firstHalteDeparture: "11:00",
 	},
 	{
 		id: "2",
 		koridor: "1",
 		rute: "Blok M - Kota",
-		etaBase: 11, // Headway riil 7 menit
+		etaBase: 50,
 		status: "Kosong",
 		firstHalteDeparture: "11:07",
 	},
 ];
 
-// HALAMAN 2: Rencana Perjalanan (Harmoni ke Ancol via transit)
+// PAGE 2: RENCANA PERJALANAN
 export const journeySteps = [
 	{
 		id: "w1",
@@ -34,10 +32,10 @@ export const journeySteps = [
 		id: "b1",
 		type: "bus",
 		startStation: "Harmoni",
-		exitStation: "Kampung Melayu", // Turun untuk transit ke Koridor 5
+		exitStation: "Kampung Melayu",
 		koridor: "5C",
 		rute: "Harmoni - PGC 1",
-		durationBase: 38, // Waktu tempuh riil Harmoni - Kp Melayu
+		durationBase: 38,
 		dist: "8.2 km",
 		baseDeparture: "11:45",
 		status: "Sedang",
@@ -55,28 +53,28 @@ export const journeySteps = [
 		exitStation: "Ancol",
 		koridor: "5",
 		rute: "Kampung Melayu - Ancol",
-		durationBase: 45, // Waktu tempuh riil Kp Melayu - Ancol
+		durationBase: 45,
 		dist: "11.5 km",
 		baseDeparture: "12:35",
 		status: "Kosong",
 	},
 ];
 
-// HALAMAN 3: Detail Halte (Kedatangan Live di Halte Harmoni)
+// PAGE 3: DETAIL HALTE
 export const halteArrivals = [
 	{
 		id: "h1",
 		koridor: "1",
 		rute: "Kota",
 		plat: "B 7001 SGA",
-		tipe: "Bus Gandeng Scania", // Tipe armada nyata
+		tipe: "Bus Gandeng Scania",
 		etaBase: 2,
 		jarakBase: 0.8,
 		status: "Sedang",
 	},
 	{
 		id: "h2",
-		koridor: "3", // Melewati Harmoni
+		koridor: "3",
 		rute: "Kalideres",
 		plat: "B 7455 TGB",
 		tipe: "Bus Maxi Hino",
@@ -86,7 +84,7 @@ export const halteArrivals = [
 	},
 	{
 		id: "h3",
-		koridor: "8", // Melewati Harmoni
+		koridor: "8",
 		rute: "Lebak Bulus",
 		plat: "B 7022 SGA",
 		tipe: "Bus Gandeng Volvo",
@@ -96,15 +94,15 @@ export const halteArrivals = [
 	},
 ];
 
-// HALAMAN 3: Info Layanan BRT di Halte Harmoni (Warna asli Transjakarta)
+// PAGE 3: INFO BRT
 export const halteLayanan = [
-	{ koridor: "1", rute: "Blok M - Kota", bg: "#D0021B" }, // Merah
-	{ koridor: "2", rute: "Pulogadung - Monas", bg: "#00529B" }, // Biru
-	{ koridor: "3", rute: "Kalideres - Monas", bg: "#F5A623" }, // Kuning
-	{ koridor: "8", rute: "Lebak Bulus - Pasar Baru", bg: "#D1106A" }, // Magenta
+	{ koridor: "1", rute: "Blok M - Kota", bg: "#D0021B" },
+	{ koridor: "2", rute: "Pulogadung - Monas", bg: "#00529B" },
+	{ koridor: "3", rute: "Kalideres - Monas", bg: "#F5A623" },
+	{ koridor: "8", rute: "Lebak Bulus - Pasar Baru", bg: "#D1106A" },
 ];
 
-// HALAMAN 4: Telemetri Detail Bus Spesifik (Perjalanan Koridor 1)
+// PAGE 4: TELEMETRI BUS
 export const detailBusData = {
 	koridor: "1",
 	rute: "Kota",
@@ -113,7 +111,7 @@ export const detailBusData = {
 	jarakBase: 0.8,
 	status: "Sedang",
 	fixedRecommendation: "11:15",
-	speed: "35 km/h", // Kecepatan aman di jalur khusus
+	speed: "35 km/h",
 	temp: "22°C",
 	stops: [
 		{ name: "Blok M", passed: true, time: "11:00" },

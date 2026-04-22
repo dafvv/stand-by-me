@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-// ============================================================
 // ICONS
-// ============================================================
 const BusSideIcon = ({ className, ...props }) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -79,24 +77,20 @@ const BusFrontlessIcon = ({ size = 20, color = "#7ab8f5" }) => (
 	</svg>
 );
 
-// Fake dark map for Page 4 (no external deps)
 const TransjakartaLiveMap = () => {
 	React.useEffect(() => {
-		let mapInstance = null; // Simpan referensi peta ke dalam variabel
+		let mapInstance = null;
 
 		const initializeMap = () => {
-			// 1. Mencegah error jika L (Leaflet) belum siap di-download
 			if (!window.L) {
 				setTimeout(initializeMap, 100);
 				return;
 			}
 
 			const mapContainer = document.getElementById("tj-real-map");
-			// 2. Mencegah peta dirender dua kali (menumpuk)
 			if (!mapContainer || mapContainer._leaflet_id) return;
 
 			const L = window.L;
-			// 3. Inisialisasi peta dan simpan ke mapInstance
 			mapInstance = L.map("tj-real-map", {
 				center: [-6.1754, 106.8272],
 				zoom: 13,
@@ -116,21 +110,20 @@ const TransjakartaLiveMap = () => {
 				[-6.195, 106.8225],
 			];
 			L.polyline(routeCoords, {
-				color: "#c05e10",
+				color: "#C92C27",
 				weight: 5,
 				opacity: 0.9,
 			}).addTo(mapInstance);
 
 			const busIcon = L.divIcon({
 				className: "custom-bus-marker",
-				html: `<div style="background-color: #c05e10; border: 2px solid white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">1</div>`,
+				html: `<div style="background-color: #C92C27; border: 2px solid white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">1</div>`,
 				iconSize: [34, 34],
 				iconAnchor: [17, 17],
 			});
 			L.marker([-6.1754, 106.8272], { icon: busIcon }).addTo(mapInstance);
 		};
 
-		// Suntikkan CSS Peta
 		if (!document.getElementById("leaflet-css")) {
 			const link = document.createElement("link");
 			link.id = "leaflet-css";
@@ -140,7 +133,6 @@ const TransjakartaLiveMap = () => {
 			document.head.appendChild(link);
 		}
 
-		// Suntikkan Javascript Peta
 		if (!document.getElementById("leaflet-js")) {
 			const script = document.createElement("script");
 			script.id = "leaflet-js";
@@ -152,10 +144,9 @@ const TransjakartaLiveMap = () => {
 			initializeMap();
 		}
 
-		// 4. CLEANUP YANG AMAN UNTUK REACT
 		return () => {
 			if (mapInstance) {
-				mapInstance.remove(); // Menghapus instance peta menggunakan fungsi bawaan Leaflet, BUKAN menghapus DOM secara paksa.
+				mapInstance.remove();
 			}
 		};
 	}, []);
@@ -165,15 +156,13 @@ const TransjakartaLiveMap = () => {
 	);
 };
 
-// ============================================================
 // DATA
-// ============================================================
 const initialRoutes = [
 	{
 		id: "1",
 		koridor: "1",
 		rute: "Blok M - Kota",
-		etaBase: 13,
+		etaBase: 40,
 		status: "Sedang",
 		firstHalteDeparture: "17:53",
 	},
@@ -181,31 +170,13 @@ const initialRoutes = [
 		id: "2",
 		koridor: "1",
 		rute: "Blok M - Kota",
-		etaBase: 28,
+		etaBase: 50,
 		status: "Kosong",
 		firstHalteDeparture: "18:08",
 	},
 ];
 
 const journeySteps = [
-	{
-		id: "w1",
-		type: "walk",
-		label: "Berjalan Ke Halte Harmoni",
-		sub: "(120 m)",
-	},
-	{
-		id: "b1",
-		type: "bus",
-		startStation: "Harmoni",
-		exitStation: "PGC 1",
-		koridor: "5C",
-		rute: "Harmoni - PGC 1",
-		durationBase: 25,
-		dist: "4.5 km",
-		baseDeparture: "13:30",
-		status: "Sedang",
-	},
 	{
 		id: "w2",
 		type: "walk",
@@ -260,8 +231,8 @@ const halteArrivals = [
 ];
 
 const halteLayanan = [
-	{ koridor: "1", rute: "Blok M - Kota", bg: "#b8530a" },
-	{ koridor: "1A", rute: "Blok M - Kota via Monumen Nasional", bg: "#b8530a" },
+	{ koridor: "1", rute: "Blok M - Kota", bg: "#C92C27" },
+	{ koridor: "1A", rute: "Blok M - Kota via Monumen Nasional", bg: "#C92C27" },
 	{ koridor: "2", rute: "Harmoni - Pulogadung", bg: "#1d5cb8" },
 ];
 
@@ -285,9 +256,7 @@ const detailBusData = {
 	],
 };
 
-// ============================================================
 // HELPERS
-// ============================================================
 function addMinToTimeStr(timeStr, minutes) {
 	const [h, m] = timeStr.split(":").map(Number);
 	const d = new Date();
@@ -303,11 +272,7 @@ function crowdStatus(baseStatus, isRushHour, offsetMin) {
 	return baseStatus;
 }
 
-// ============================================================
 // SHARED SUBCOMPONENTS
-// ============================================================
-
-// Dark pill dropdown for departure offset
 const DepartureBar = ({ value, onChange }) => (
 	<div className="bg-[#1c2d45] rounded-2xl px-4 py-3 flex items-center justify-between">
 		<span className="text-[#7a9bbf] text-xs font-semibold uppercase tracking-wider">
@@ -332,7 +297,6 @@ const DepartureBar = ({ value, onChange }) => (
 	</div>
 );
 
-// Colored bus icon + bar indicator
 const CrowdBusIcon = ({ crowd }) => {
 	const color =
 		crowd === "Kosong" ? "#2ec07a" : crowd === "Sedang" ? "#e6a020" : "#e05a30";
@@ -344,13 +308,11 @@ const CrowdBusIcon = ({ crowd }) => {
 	);
 };
 
-// Jarak (orange) + Status (blue) twin chips
 const JarakStatusRow = ({ jarak, crowd }) => {
 	const crowdColor =
 		crowd === "Kosong" ? "#2ec07a" : crowd === "Sedang" ? "#e6a020" : "#e05a30";
 	return (
 		<div className="flex gap-2">
-			{/* Orange: jarak */}
 			<div
 				className="flex-1 rounded-xl p-3"
 				style={{ background: "#1e1608", border: "1px solid #3a2810" }}
@@ -379,7 +341,6 @@ const JarakStatusRow = ({ jarak, crowd }) => {
 					</svg>
 				</div>
 			</div>
-			{/* Blue: status */}
 			<div
 				className="flex-[1.5] rounded-xl p-3 flex items-center justify-between"
 				style={{ background: "#0e1e30", border: "1px solid #1a3050" }}
@@ -401,14 +362,11 @@ const JarakStatusRow = ({ jarak, crowd }) => {
 	);
 };
 
-// Page divider line
 const Divider = ({ my = "my-0" }) => (
 	<div className={`h-px bg-[#1a2d44] ${my}`} />
 );
 
-// ============================================================
 // MAIN APP
-// ============================================================
 export default function App() {
 	const [activePage, setActivePage] = useState("tujuan_kamu");
 	const [departureOffset, setDepartureOffset] = useState("sekarang");
@@ -417,7 +375,6 @@ export default function App() {
 	const offsetMin =
 		departureOffset === "sekarang" ? 0 : parseInt(departureOffset);
 
-	// ── Page 1 computed data ──────────────────────────────────
 	const data1 = initialRoutes.map((bus) => ({
 		...bus,
 		eta: bus.etaBase + offsetMin + (isRushHour ? 8 : 0),
@@ -425,7 +382,6 @@ export default function App() {
 		recTime: addMinToTimeStr(bus.firstHalteDeparture, offsetMin - 5),
 	}));
 
-	// ── Page 2 computed data ──────────────────────────────────
 	const data2 = journeySteps.map((step) => {
 		if (step.type !== "bus") return step;
 		const crowd = crowdStatus(step.status, isRushHour, offsetMin);
@@ -435,7 +391,6 @@ export default function App() {
 		return { ...step, crowd, duration, recTime };
 	});
 
-	// ── Page 3 computed data ──────────────────────────────────
 	const data3 = halteArrivals.map((bus) => {
 		const eta = bus.etaBase + offsetMin + (isRushHour ? 5 : 0);
 		const jarak =
@@ -449,16 +404,14 @@ export default function App() {
 		return { ...bus, eta, jarak, crowd, clockTime };
 	});
 
-	// ── Page 4 computed data ──────────────────────────────────
 	const data4 = {
 		...detailBusData,
-		crowd: crowdStatus(detailBusData.status, isRushHour, 0), // offset ignored per PM
+		crowd: crowdStatus(detailBusData.status, isRushHour, 0),
 		jarak: isRushHour
 			? (detailBusData.jarakBase - 0.1).toFixed(1) + " km"
 			: detailBusData.jarakBase.toFixed(1) + " km",
 	};
 
-	// ── Transport strip strip (pages 1/2) ─────────────────────
 	const TransportStrip = () => (
 		<div className="flex items-center gap-0.5 px-4 py-3 shrink-0">
 			{[0, 1, 2, 3, 4, 5, 6].map((i) => {
@@ -478,7 +431,6 @@ export default function App() {
 		</div>
 	);
 
-	// ── Shared page header ────────────────────────────────────
 	const PageHeader = ({ title }) => (
 		<div className="flex items-center gap-3 px-4 py-4 shrink-0">
 			<button className="w-10 h-10 rounded-full bg-[#1c2d45] flex items-center justify-center flex-shrink-0">
@@ -492,9 +444,7 @@ export default function App() {
 		<div className="w-12 h-1 bg-[#3a5070] rounded-full mx-auto mb-3 shrink-0" />
 	);
 
-	// ============================================================
 	// RENDER
-	// ============================================================
 	return (
 		<div
 			className="min-h-screen flex items-center justify-center p-4 pb-28 font-sans"
@@ -510,14 +460,11 @@ export default function App() {
 					boxShadow: "0 30px 80px rgba(0,0,0,0.7)",
 				}}
 			>
-				{/* ══════════════════════════════════════════════════
-            PAGE 1 — TUJUAN KAMU
-        ══════════════════════════════════════════════════ */}
+				{/* PAGE 1: TUJUAN KAMU */}
 				{activePage === "tujuan_kamu" && (
 					<div className="flex-1 flex flex-col overflow-hidden">
 						<PageHeader title="Tujuan Kamu" />
 
-						{/* Origin / Destination inputs */}
 						<div className="px-4 pb-4 shrink-0 space-y-2">
 							<div className="flex items-center gap-2">
 								<div className="flex-1 bg-[#1c2d45] rounded-xl px-4 py-3 flex items-center gap-3">
@@ -585,7 +532,6 @@ export default function App() {
 									</svg>
 								</button>
 							</div>
-							{/* Departure dropdown */}
 							<DepartureBar
 								value={departureOffset}
 								onChange={setDepartureOffset}
@@ -594,18 +540,18 @@ export default function App() {
 
 						<Divider />
 
-						{/* Tabs */}
 						<div className="flex items-center gap-3 px-4 py-3 shrink-0">
 							<div className="bg-[#1d73e8] text-white text-sm font-semibold px-5 py-2 rounded-full">
 								Rute Tersedia
 							</div>
 						</div>
 
-						{/* Route cards */}
 						<div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
 							{data1.map((bus) => (
-								<div className="bg-[#132236] rounded-2xl p-4 shadow-sm">
-									{/* --- BAGIAN ATAS: Sekarang menjadi Rek. Keberangkatan --- */}
+								<div
+									key={bus.id}
+									className="bg-[#132236] rounded-2xl p-4 shadow-sm"
+								>
 									<div className="flex justify-between mb-1">
 										<span className="text-[#7a9bbf] text-[11px] font-bold uppercase tracking-wider">
 											Rek. Keberangkatan
@@ -616,16 +562,14 @@ export default function App() {
 									</div>
 
 									<div className="flex items-center justify-between mb-3">
-										{/* Nilai Rek. Keberangkatan */}
 										<span className="text-white font-extrabold text-xl">
 											{bus.recTime}
 										</span>
 
-										{/* Transport Strip (Ikon Orang & Bus) Tetap di Atas Kanan */}
 										<div className="flex items-center gap-1.5">
 											<WalkIcon size={18} />
 											<BusFrontlessIcon size={18} />
-											<div className="w-5 h-5 rounded-full bg-[#b8530a] flex items-center justify-center text-white text-[9px] font-black">
+											<div className="w-5 h-5 rounded-full bg-[#C92C27] flex items-center justify-center text-white text-[9px] font-black">
 												{bus.koridor}
 											</div>
 											<WalkIcon size={18} />
@@ -637,7 +581,6 @@ export default function App() {
 
 									<Divider />
 
-									{/* --- BAGIAN BAWAH (HIGHLIGHT HIJAU): Sekarang menjadi Lama Perjalanan --- */}
 									<div className="pt-3 flex items-center justify-between">
 										<div className="border-l-[3px] border-[#2ec07a] pl-3">
 											<span className="text-[#2ec07a] text-[9px] font-black uppercase tracking-widest block mb-0.5">
@@ -653,11 +596,9 @@ export default function App() {
 											</div>
 										</div>
 
-										{/* Ikon Bus Dinamis Tetap di Kanan Bawah */}
 										<CrowdBusIcon crowd={bus.crowd} />
 									</div>
 
-									{/* Chips row (Harga, Jarak, Tercepat) */}
 									<div className="flex items-center gap-2 mt-3">
 										<div className="bg-[#1c2d45] text-[#cce0f5] text-xs font-medium rounded-full px-3 py-1.5">
 											Rp 3.500
@@ -677,18 +618,15 @@ export default function App() {
 					</div>
 				)}
 
-				{/* ══════════════════════════════════════════════════
-            PAGE 2 — RENCANA PERJALANAN
-        ══════════════════════════════════════════════════ */}
+				{/* PAGE 2: RENCANA PERJALANAN */}
 				{activePage === "tujuan_2" && (
 					<div className="flex-1 flex flex-col overflow-hidden">
 						<PageHeader title="Rencana Perjalanan" />
 						<Handle />
 
-						{/* Summary card */}
 						<div className="px-4 pb-3 shrink-0">
 							<div className="text-white font-extrabold text-[18px] mb-3">
-								Lokasi Saya - Kota
+								Lokasi Saya - Ancol
 							</div>
 							<div className="flex gap-2 mb-3">
 								<div className="bg-[#1c2d45] text-[#cce0f5] rounded-full px-4 py-2 flex items-center gap-2 text-sm">
@@ -732,7 +670,6 @@ export default function App() {
 						<TransportStrip />
 						<Divider />
 
-						{/* Departure dropdown */}
 						<div className="px-4 pt-3 pb-1 shrink-0">
 							<DepartureBar
 								value={departureOffset}
@@ -740,7 +677,6 @@ export default function App() {
 							/>
 						</div>
 
-						{/* Steps */}
 						<div className="flex-1 overflow-y-auto px-4 pb-6 pt-2">
 							{data2.map((step) => {
 								if (step.type === "walk")
@@ -769,7 +705,6 @@ export default function App() {
 								if (step.type === "bus")
 									return (
 										<div key={step.id} className="border-b border-[#1a2d44]">
-											{/* Start */}
 											<div className="flex gap-3 pt-3">
 												<div className="flex flex-col items-center w-6 shrink-0">
 													<div className="w-3.5 h-3.5 rounded-full bg-[#D46121] border-2 border-[#D46121] z-10" />
@@ -790,7 +725,6 @@ export default function App() {
 															{step.rute}
 														</span>
 													</div>
-													{/* Recommendation + icon box */}
 													<div className="bg-[#1c2d45] rounded-xl p-3 flex items-center justify-between mb-2">
 														<div className="border-l-[3px] border-[#2ec07a] pl-3">
 															<span className="text-[#2ec07a] text-[9px] font-black uppercase tracking-widest block mb-0.5">
@@ -804,20 +738,18 @@ export default function App() {
 													</div>
 												</div>
 											</div>
-											{/* Duration row */}
 											<div className="flex items-center justify-between pl-9 pb-2 pt-0">
 												<span className="text-[#7a9bbf] text-xs">
 													{step.duration} menit &nbsp;({step.dist})
 												</span>
 												<ChevronDown />
 											</div>
-											{/* Exit */}
 											<div className="flex gap-3 pb-3">
 												<div className="flex flex-col items-center w-6 shrink-0">
-													<div className="w-3.5 h-3.5 rounded-full bg-[#c05e10]" />
+													<div className="w-3.5 h-3.5 rounded-full bg-[#D46121]" />
 												</div>
 												<div className="flex-1">
-													<div className="text-[#e05a30] text-[10px] font-black uppercase tracking-widest">
+													<div className="text-[#D46121] text-[10px] font-black uppercase tracking-widest">
 														Exit
 													</div>
 													<div className="text-white font-bold text-[15px]">
@@ -833,9 +765,7 @@ export default function App() {
 					</div>
 				)}
 
-				{/* ══════════════════════════════════════════════════
-            PAGE 3 — DETAIL HALTE
-        ══════════════════════════════════════════════════ */}
+				{/* PAGE 3: DETAIL HALTE */}
 				{activePage === "tujuan_3" && (
 					<div className="flex-1 flex flex-col overflow-hidden">
 						<PageHeader title="Detail Halte" />
@@ -843,7 +773,6 @@ export default function App() {
 						<Divider />
 
 						<div className="flex-1 overflow-y-auto px-4 pb-6">
-							{/* Section: Kedatangan Bus */}
 							<div className="pt-4">
 								<div className="flex items-start justify-between mb-1">
 									<h2 className="text-white font-extrabold text-xl">
@@ -862,7 +791,7 @@ export default function App() {
 											<line x1="12" y1="8" x2="12" y2="8.5" />
 											<line x1="12" y1="11" x2="12" y2="16" />
 										</svg>
-										Panduan Waktu Kedatangan Bus
+										Panduan Waktu
 									</span>
 								</div>
 								<p className="text-[#7a9bbf] text-xs leading-relaxed mb-4">
@@ -870,7 +799,6 @@ export default function App() {
 									lalu lintas, kondisi bus, dan koneksi internet.
 								</p>
 
-								{/* Departure dropdown */}
 								<div className="mb-4">
 									<DepartureBar
 										value={departureOffset}
@@ -878,7 +806,6 @@ export default function App() {
 									/>
 								</div>
 
-								{/* Arrival cards container */}
 								<div
 									className="rounded-2xl overflow-hidden"
 									style={{ background: "#132236" }}
@@ -888,16 +815,15 @@ export default function App() {
 											key={bus.id}
 											className={`p-4 ${i < data3.length - 1 ? "border-b border-[#1e3554]" : ""}`}
 										>
-											{/* Top row: bus id + "Perkiraan Kedatangan" */}
 											<div className="flex items-center justify-between mb-3">
 												<div className="flex items-center gap-2">
 													<BusFrontlessIcon size={18} />
-													<div className="w-6 h-6 rounded bg-[#b8530a] flex items-center justify-center text-white text-[10px] font-black">
+													<div className="w-6 h-6 rounded bg-[#C92C27] flex items-center justify-center text-white text-[10px] font-black">
 														{bus.koridor}
 													</div>
 													<div
 														className="rounded px-2 py-0.5 text-white text-[10px] font-bold"
-														style={{ background: "#c25e10" }}
+														style={{ background: "#C92C27" }}
 													>
 														{bus.plat}
 													</div>
@@ -906,7 +832,6 @@ export default function App() {
 													Perkiraan Kedatangan
 												</span>
 											</div>
-											{/* Bottom row: destination + ETA */}
 											<div className="flex items-center justify-between mb-3">
 												<div className="flex items-center gap-3">
 													<div className="w-8 h-8 rounded-full bg-[#1e3554] flex items-center justify-center shrink-0">
@@ -946,7 +871,6 @@ export default function App() {
 													</div>
 												</div>
 											</div>
-											{/* Jarak + Status */}
 											<JarakStatusRow jarak={bus.jarak} crowd={bus.crowd} />
 										</div>
 									))}
@@ -955,7 +879,6 @@ export default function App() {
 
 							<Divider my="my-5" />
 
-							{/* Section: Fasilitas */}
 							<h2 className="text-white font-extrabold text-xl mb-3">
 								Fasilitas
 							</h2>
@@ -968,7 +891,6 @@ export default function App() {
 
 							<Divider my="my-5" />
 
-							{/* Section: Layanan Bus BRT */}
 							<h2 className="text-white font-extrabold text-xl mb-3">
 								Layanan Bus BRT
 							</h2>
@@ -992,15 +914,11 @@ export default function App() {
 					</div>
 				)}
 
-				{/* ══════════════════════════════════════════════════
-            PAGE 4 — DETAIL BUS
-        ══════════════════════════════════════════════════ */}
+				{/* PAGE 4: DETAIL BUS */}
 				{activePage === "tujuan_4" && (
 					<div className="flex-1 flex flex-col overflow-hidden relative">
-						{/* Dark map */}
 						<TransjakartaLiveMap />
 
-						{/* Map overlay: header */}
 						<div className="absolute top-0 left-0 right-0 flex items-center gap-3 px-4 py-4 z-20">
 							<button
 								className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
@@ -1011,7 +929,6 @@ export default function App() {
 							<h1 className="text-lg font-bold text-white">Detail Bus</h1>
 						</div>
 
-						{/* Map badge: Data Bus Masuk */}
 						<div
 							className="absolute top-[68px] left-4 z-20 rounded-full px-4 py-2 flex items-center gap-2"
 							style={{ background: "rgba(11,22,41,0.85)" }}
@@ -1022,7 +939,6 @@ export default function App() {
 							</span>
 						</div>
 
-						{/* Location button */}
 						<button
 							className="absolute right-4 z-20 w-10 h-10 rounded-full flex items-center justify-center"
 							style={{
@@ -1047,7 +963,6 @@ export default function App() {
 							</svg>
 						</button>
 
-						{/* Bottom sheet */}
 						<div
 							className="absolute bottom-0 left-0 right-0 z-20 flex flex-col rounded-t-3xl"
 							style={{ height: "46%", background: "#0b1629" }}
@@ -1055,17 +970,15 @@ export default function App() {
 							<Handle />
 
 							<div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
-								{/* Bus ID row */}
 								<div className="flex items-center gap-3">
-									<div className="w-10 h-10 rounded-full bg-[#c05e10] flex items-center justify-center text-white font-black text-base shrink-0">
+									<div className="w-10 h-10 rounded-full bg-[#C92C27] flex items-center justify-center text-white font-black text-base shrink-0">
 										{data4.koridor}
 									</div>
-									<div className="bg-[#c05e10] text-white text-sm font-bold rounded-xl px-4 py-2">
+									<div className="bg-[#C92C27] text-white text-sm font-bold rounded-xl px-4 py-2">
 										{data4.plat}
 									</div>
 								</div>
 
-								{/* Info cards */}
 								<div className="flex gap-3">
 									<div
 										className="flex-1 rounded-2xl p-3"
@@ -1089,7 +1002,6 @@ export default function App() {
 									</div>
 								</div>
 
-								{/* Fixed recommendation (per PM: fixed, not affected by dropdown) */}
 								<div className="bg-[#1c2d45] rounded-xl px-4 py-3 flex items-center justify-between">
 									<span className="text-[#7a9bbf] text-xs font-semibold uppercase tracking-wider">
 										Waktu Keberangkatan
@@ -1099,10 +1011,8 @@ export default function App() {
 									</span>
 								</div>
 
-								{/* Jarak + Status */}
 								<JarakStatusRow jarak={data4.jarak} crowd={data4.crowd} />
 
-								{/* Kedatangan section */}
 								<div>
 									<h3 className="text-white font-extrabold text-base mb-1">
 										Kedatangan Bus
@@ -1143,9 +1053,7 @@ export default function App() {
 				)}
 			</div>
 
-			{/* ══════════════════════════════════════════════════
-          PROTOTYPE DOCK
-      ══════════════════════════════════════════════════ */}
+			{/* PROTOTYPE DOCK */}
 			<div
 				className="fixed bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2.5 p-2.5 rounded-full z-50"
 				style={{
