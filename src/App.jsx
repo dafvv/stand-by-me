@@ -80,131 +80,90 @@ const BusFrontlessIcon = ({ size = 20, color = "#7ab8f5" }) => (
 );
 
 // Fake dark map for Page 4 (no external deps)
-const DarkMapSVG = () => (
-	<div
-		className="absolute inset-0 overflow-hidden"
-		style={{ background: "#0a1624" }}
-	>
-		<div
-			className="absolute inset-0"
-			style={{
-				backgroundImage:
-					"linear-gradient(#162233 1px, transparent 1px), linear-gradient(90deg, #162233 1px, transparent 1px)",
-				backgroundSize: "30px 30px",
-				opacity: 0.6,
-			}}
-		/>
-		<svg
-			className="absolute inset-0 w-full h-full"
-			preserveAspectRatio="none"
-			viewBox="0 0 390 340"
-		>
-			{/* Block shapes */}
-			<rect x="40" y="60" width="80" height="50" rx="4" fill="#112030" />
-			<rect x="140" y="40" width="60" height="40" rx="4" fill="#112030" />
-			<rect x="220" y="70" width="90" height="60" rx="4" fill="#112030" />
-			<rect x="50" y="150" width="70" height="70" rx="4" fill="#112030" />
-			<rect x="250" y="160" width="80" height="55" rx="4" fill="#112030" />
-			<rect x="140" y="200" width="70" height="60" rx="4" fill="#112030" />
-			{/* Roads */}
-			<path
-				d="M 0 160 Q 100 150 200 170 T 390 180"
-				fill="none"
-				stroke="#192d44"
-				strokeWidth="12"
-			/>
-			<path
-				d="M 0 160 Q 100 150 200 170 T 390 180"
-				fill="none"
-				stroke="#1e3550"
-				strokeWidth="6"
-			/>
-			<path
-				d="M 130 0 Q 145 100 175 170 T 200 340"
-				fill="none"
-				stroke="#192d44"
-				strokeWidth="12"
-			/>
-			<path
-				d="M 130 0 Q 145 100 175 170 T 200 340"
-				fill="none"
-				stroke="#1e3550"
-				strokeWidth="6"
-			/>
-			<path
-				d="M 0 260 L 390 255"
-				fill="none"
-				stroke="#192d44"
-				strokeWidth="8"
-			/>
-			<path
-				d="M 270 0 L 265 340"
-				fill="none"
-				stroke="#192d44"
-				strokeWidth="8"
-			/>
-			{/* Bus route (orange line) */}
-			<path
-				d="M 20 50 Q 80 120 150 175 T 320 310"
-				fill="none"
-				stroke="#c05e10"
-				strokeWidth="5"
-				strokeLinecap="round"
-				strokeOpacity="0.9"
-			/>
-			{/* BRT stops */}
-			{[
-				[45, 80],
-				[85, 120],
-				[130, 158],
-				[162, 188],
-				[198, 220],
-				[235, 255],
-				[275, 290],
-			].map(([cx, cy], i) => (
-				<g key={i}>
-					<circle
-						cx={cx}
-						cy={cy}
-						r="7"
-						fill="#1d73e8"
-						stroke="white"
-						strokeWidth="1.5"
-					/>
-					<text
-						x={cx}
-						y={cy + 3}
-						fontSize="6"
-						fill="white"
-						textAnchor="middle"
-						fontWeight="bold"
-					>
-						B
-					</text>
-				</g>
-			))}
-			{/* Current bus */}
-			<circle
-				cx="162"
-				cy="188"
-				r="13"
-				fill="#c05e10"
-				stroke="white"
-				strokeWidth="2.5"
-			/>
-			<text
-				x="162"
-				y="192"
-				fontSize="10"
-				fill="white"
-				textAnchor="middle"
-				fontWeight="bold"
-			>
-				1
-			</text>
-		</svg>
-	</div>
-);
+const TransjakartaLiveMap = () => {
+	React.useEffect(() => {
+		let mapInstance = null; // Simpan referensi peta ke dalam variabel
+
+		const initializeMap = () => {
+			// 1. Mencegah error jika L (Leaflet) belum siap di-download
+			if (!window.L) {
+				setTimeout(initializeMap, 100);
+				return;
+			}
+
+			const mapContainer = document.getElementById("tj-real-map");
+			// 2. Mencegah peta dirender dua kali (menumpuk)
+			if (!mapContainer || mapContainer._leaflet_id) return;
+
+			const L = window.L;
+			// 3. Inisialisasi peta dan simpan ke mapInstance
+			mapInstance = L.map("tj-real-map", {
+				center: [-6.1754, 106.8272],
+				zoom: 13,
+				zoomControl: false,
+				attributionControl: false,
+			});
+
+			L.tileLayer(
+				"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+				{ maxZoom: 19 },
+			).addTo(mapInstance);
+
+			const routeCoords = [
+				[-6.17, 106.822],
+				[-6.1754, 106.8272],
+				[-6.184, 106.823],
+				[-6.195, 106.8225],
+			];
+			L.polyline(routeCoords, {
+				color: "#c05e10",
+				weight: 5,
+				opacity: 0.9,
+			}).addTo(mapInstance);
+
+			const busIcon = L.divIcon({
+				className: "custom-bus-marker",
+				html: `<div style="background-color: #c05e10; border: 2px solid white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">1</div>`,
+				iconSize: [34, 34],
+				iconAnchor: [17, 17],
+			});
+			L.marker([-6.1754, 106.8272], { icon: busIcon }).addTo(mapInstance);
+		};
+
+		// Suntikkan CSS Peta
+		if (!document.getElementById("leaflet-css")) {
+			const link = document.createElement("link");
+			link.id = "leaflet-css";
+			link.rel = "stylesheet";
+			link.href =
+				"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
+			document.head.appendChild(link);
+		}
+
+		// Suntikkan Javascript Peta
+		if (!document.getElementById("leaflet-js")) {
+			const script = document.createElement("script");
+			script.id = "leaflet-js";
+			script.src =
+				"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+			script.onload = initializeMap;
+			document.head.appendChild(script);
+		} else {
+			initializeMap();
+		}
+
+		// 4. CLEANUP YANG AMAN UNTUK REACT
+		return () => {
+			if (mapInstance) {
+				mapInstance.remove(); // Menghapus instance peta menggunakan fungsi bawaan Leaflet, BUKAN menghapus DOM secara paksa.
+			}
+		};
+	}, []);
+
+	return (
+		<div id="tj-real-map" className="absolute inset-0 z-0 bg-[#0a1624]"></div>
+	);
+};
 
 // ============================================================
 // DATA
@@ -645,25 +604,24 @@ export default function App() {
 						{/* Route cards */}
 						<div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
 							{data1.map((bus) => (
-								<div
-									key={bus.id}
-									className="rounded-2xl p-4"
-									style={{ background: "#132236" }}
-								>
-									{/* Labels row */}
+								<div className="bg-[#132236] rounded-2xl p-4 shadow-sm">
+									{/* --- BAGIAN ATAS: Sekarang menjadi Rek. Keberangkatan --- */}
 									<div className="flex justify-between mb-1">
-										<span className="text-[#7a9bbf] text-[11px]">
-											Lama Perjalanan
+										<span className="text-[#7a9bbf] text-[11px] font-bold uppercase tracking-wider">
+											Rek. Keberangkatan
 										</span>
 										<span className="text-[#7a9bbf] text-[11px]">
 											Perjalanan
 										</span>
 									</div>
-									{/* Time + transport strip row */}
+
 									<div className="flex items-center justify-between mb-3">
+										{/* Nilai Rek. Keberangkatan */}
 										<span className="text-white font-extrabold text-xl">
-											{bus.eta} menit
+											{bus.recTime}
 										</span>
+
+										{/* Transport Strip (Ikon Orang & Bus) Tetap di Atas Kanan */}
 										<div className="flex items-center gap-1.5">
 											<WalkIcon size={18} />
 											<BusFrontlessIcon size={18} />
@@ -679,20 +637,27 @@ export default function App() {
 
 									<Divider />
 
-									{/* Recommendation + bus icon */}
+									{/* --- BAGIAN BAWAH (HIGHLIGHT HIJAU): Sekarang menjadi Lama Perjalanan --- */}
 									<div className="pt-3 flex items-center justify-between">
 										<div className="border-l-[3px] border-[#2ec07a] pl-3">
 											<span className="text-[#2ec07a] text-[9px] font-black uppercase tracking-widest block mb-0.5">
-												Rek. Keberangkatan
+												Lama Perjalanan
 											</span>
-											<span className="text-white font-extrabold text-2xl tracking-tight leading-none">
-												{bus.recTime}
-											</span>
+											<div className="flex items-baseline gap-1">
+												<span className="text-white font-extrabold text-2xl tracking-tight leading-none">
+													{bus.eta}
+												</span>
+												<span className="text-white font-bold text-sm">
+													menit
+												</span>
+											</div>
 										</div>
+
+										{/* Ikon Bus Dinamis Tetap di Kanan Bawah */}
 										<CrowdBusIcon crowd={bus.crowd} />
 									</div>
 
-									{/* Chips row */}
+									{/* Chips row (Harga, Jarak, Tercepat) */}
 									<div className="flex items-center gap-2 mt-3">
 										<div className="bg-[#1c2d45] text-[#cce0f5] text-xs font-medium rounded-full px-3 py-1.5">
 											Rp 3.500
@@ -807,8 +772,8 @@ export default function App() {
 											{/* Start */}
 											<div className="flex gap-3 pt-3">
 												<div className="flex flex-col items-center w-6 shrink-0">
-													<div className="w-3.5 h-3.5 rounded-full bg-[#c05e10] border-2 border-[#c05e10] z-10" />
-													<div className="w-0.5 flex-1 bg-[#c05e10] min-h-[24px]" />
+													<div className="w-3.5 h-3.5 rounded-full bg-[#D46121] border-2 border-[#D46121] z-10" />
+													<div className="w-0.5 flex-1 bg-[#D46121] min-h-[24px]" />
 												</div>
 												<div className="flex-1 pb-2">
 													<div className="text-[#e6a020] text-[10px] font-black uppercase tracking-widest">
@@ -818,7 +783,7 @@ export default function App() {
 														{step.startStation}
 													</div>
 													<div className="flex items-center gap-2 mb-3">
-														<div className="w-6 h-6 rounded bg-[#c05e10] flex items-center justify-center text-white text-[10px] font-black">
+														<div className="w-6 h-6 rounded bg-[#D46121] flex items-center justify-center text-white text-[10px] font-black">
 															{step.koridor}
 														</div>
 														<span className="text-[#4da3f5] text-sm font-semibold">
@@ -1033,7 +998,7 @@ export default function App() {
 				{activePage === "tujuan_4" && (
 					<div className="flex-1 flex flex-col overflow-hidden relative">
 						{/* Dark map */}
-						<DarkMapSVG />
+						<TransjakartaLiveMap />
 
 						{/* Map overlay: header */}
 						<div className="absolute top-0 left-0 right-0 flex items-center gap-3 px-4 py-4 z-20">
