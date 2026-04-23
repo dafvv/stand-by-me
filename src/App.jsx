@@ -701,13 +701,13 @@ export default function App() {
 					onClick={() => setDeviceMode("app")}
 					className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${deviceMode === "app" ? "bg-[#1d73e8] text-white shadow-md" : "text-[#7a9bbf] hover:text-white"}`}
 				>
-					📱 Mode Aplikasi
+					Mode Aplikasi
 				</button>
 				<button
 					onClick={() => setDeviceMode("tv")}
 					className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${deviceMode === "tv" ? "bg-[#1d73e8] text-white shadow-md" : "text-[#7a9bbf] hover:text-white"}`}
 				>
-					📺 Mode TV Halte
+					Mode TV Halte
 				</button>
 			</div>
 
@@ -1385,7 +1385,7 @@ export default function App() {
 							color: isRushHour ? "white" : "#7a9bbf",
 						}}
 					>
-						{isRushHour ? "🛑 Jam Sibuk ON" : "⏱️ Jam Sibuk"}
+						{isRushHour ? "Jam Sibuk ON" : "Jam Sibuk"}
 					</button>
 					<div className="w-px h-5 bg-[#1c2d45]" />
 					<div className="flex gap-2">
@@ -1401,7 +1401,7 @@ export default function App() {
 							}
 							className="px-3 py-2 rounded-full text-[10px] font-black transition-all bg-[#D46121] text-white hover:scale-105"
 						>
-							🔔 Alert Ringan
+							Alert Ringan
 						</button>
 						<button
 							onClick={() =>
@@ -1415,7 +1415,7 @@ export default function App() {
 							}
 							className="px-3 py-2 rounded-full text-[10px] font-black transition-all bg-[#C92C27] text-white hover:scale-105"
 						>
-							⚠️ Alert Berat
+							Alert Berat
 						</button>
 					</div>
 				</div>
