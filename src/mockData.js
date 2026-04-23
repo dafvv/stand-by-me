@@ -23,24 +23,6 @@ export const initialRoutes = [
 // PAGE 2: RENCANA PERJALANAN
 export const journeySteps = [
 	{
-		id: "w1",
-		type: "walk",
-		label: "Berjalan Ke Halte Harmoni",
-		sub: "(120 m)",
-	},
-	{
-		id: "b1",
-		type: "bus",
-		startStation: "Harmoni",
-		exitStation: "Kampung Melayu",
-		koridor: "5C",
-		rute: "Harmoni - PGC 1",
-		durationBase: 38,
-		dist: "8.2 km",
-		baseDeparture: "11:45",
-		status: "Sedang",
-	},
-	{
 		id: "w2",
 		type: "walk",
 		label: "Transit di Halte Kampung Melayu",
